@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <title>Demo</title>
+  <meta name="description" content=""/>
+  <meta name="viewport" content="width=device-width"/>
+  <base href="/"/>
+  <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+</head>
+<body>
+<h1>Oauth Demo</h1>
+<div class="container"></div>
+<div>
+  <button onClick="logout()">Logout</button>
+</div>
+<div class="unauthenticated">With FB: <a href="/login/facebook">click here</a></div>
+<div class="unauthenticated">With Github: <a href="/login/github">click here</a></div>
+<div class="authenticated" style="display: none">Logged in as: <span id="user"></span></div>
+
+
+<script type="text/javascript">
+    $.get("/user", function(data) {
+
+      document.querySelector('#user').innerText = data.user.userAuthentication.details.name
+      document.querySelector('.unauthenticated').style.display = 'none'
+      document.querySelector('.authenticated').style.display = 'block'
+
+    })
+
+    function logout() {
+
+      $.post('/logout', function() {
+        $('#user').html('')
+        $('.unauthenticated').show()
+        $('.authenticated').hide()
+      })
+    }
+
+    $.ajaxSetup({
+      beforeSend: function(xhr, settings){
+        if (settings.type === 'POST') {
+          xhr.setRequestHeader('X-XSRF-TOKEN', Cookies.get('XSRF-TOKEN'))
+        }
+      }
+    })
+
+</script>
+
+</body>
+
+</html>
