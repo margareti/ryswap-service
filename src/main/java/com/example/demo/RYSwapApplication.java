@@ -22,8 +22,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 
 @SpringBootApplication
 
-@EnableOAuth2Client
-@EnableAuthorizationServer
 public class RYSwapApplication {
 
   public static void main(String[] args) {
