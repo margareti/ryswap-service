@@ -46,6 +46,16 @@
         WRITE_DATES_AS_TIMESTAMPS: false
       time-zone: UTC
 
+    jpa:
+      hibernate: 
+        ddl-auto: update
+    
+    datasource:
+      url: jdbc:mysql://localhost:3306/ryswap
+      username: root
+      password: root
+
+
   ## App Properties
   app:
     jwtSecret: auuuusecret

@@ -15,17 +15,31 @@
  */
 package com.example.demo;
 
+import com.example.demo.users.auth.RoleRepository;
+import com.example.demo.users.auth.UserRole;
+import com.example.demo.users.auth.UserRoleName;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 
 @SpringBootApplication
 
 public class RYSwapApplication {
 
+  @Autowired 
+  RoleRepository roleRepository;
+
   public static void main(String[] args) {
     SpringApplication.run(RYSwapApplication.class, args);
+  }
+
+  @EventListener(ApplicationReadyEvent.class)
+  public void doAfterStartup() {
+    roleRepository.save(new UserRole(UserRoleName.ROLE_USER) );
+
   }
 }
 
