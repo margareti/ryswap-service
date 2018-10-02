@@ -36,10 +36,10 @@ public class RYSwapApplication {
     SpringApplication.run(RYSwapApplication.class, args);
   }
 
-  @EventListener(ApplicationReadyEvent.class)
-  public void doAfterStartup() {
-    roleRepository.save(new UserRole(UserRoleName.ROLE_USER) );
+  // @EventListener(ApplicationReadyEvent.class)
+  // public void doAfterStartup() {
+  //   roleRepository.save(new UserRole(UserRoleName.ROLE_USER) );
 
-  }
+  // }
 }
 

@@ -55,7 +55,7 @@ public class LoginController {
     private String getJwtToken(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsernameOrEmail(),
+                        loginRequest.getUsername(),
                         loginRequest.getPassword()
                 )
         );
@@ -64,31 +64,4 @@ public class LoginController {
 
         return tokenProvider.generateToken(authentication);
     }
-
-    @PostMapping("/registerUser")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        if (userLoginRepository.existsByUsername(signUpRequest.getUsername())) {
-            return OperationResult.error("", "Username already taken!");
-        }
-
-        // Creating user's account
-        User user = new User(signUpRequest.getName(), signUpRequest.getEmail());
-        UserRole userUserRole = roleRepository.findByName(UserRoleName.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("User UserRole not set."));
-        user.setUserRoles(Collections.singleton(userUserRole));
-        userRepository.save(user);
-
-        UserLogin userLogin = new UserLogin();
-        userLogin.setUser(user);
-        userLogin.setUsername(signUpRequest.getUsername());
-        userLogin.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        userLoginRepository.save(userLogin);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/users/{username}")
-                .buildAndExpand(userLogin.getUsername()).toUri();
-
-        return OperationResult.succes("User registered successfully").created(location).build();
-    }
-
 }
