@@ -1,11 +1,8 @@
 package com.example.demo.users.login;
 
-import com.example.demo.OperationResult;
-import com.example.demo.security.JwtTokenProvider;
-import com.example.demo.users.User;
+import com.example.demo.security.jwt.JwtTokenProvider;
 import com.example.demo.users.UserRepository;
 import com.example.demo.users.auth.*;
-import com.example.demo.users.signup.SignUpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,11 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
-import java.util.Collections;
 
 @RestController
 @RequestMapping("/api")
@@ -49,7 +43,7 @@ public class LoginController {
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         String jwt = getJwtToken(loginRequest);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+        return ResponseEntity.ok(new LoginResponse(jwt));
     }
 
     private String getJwtToken(@Valid @RequestBody LoginRequest loginRequest) {

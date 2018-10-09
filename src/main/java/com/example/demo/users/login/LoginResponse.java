@@ -1,10 +1,10 @@
 package com.example.demo.users.login;
 
-public class JwtAuthenticationResponse {
+public class LoginResponse {
     private String accessToken;
     private String tokenType = "Bearer";
 
-    public JwtAuthenticationResponse(String accessToken) {
+    public LoginResponse(String accessToken) {
         this.accessToken = accessToken;
     }
 

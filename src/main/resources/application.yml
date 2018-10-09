@@ -37,7 +37,7 @@
 #  server.compression.enabled=true
 
   ## Hibernate Logging
-#  logging.level.org.hibernate.SQL= DEBUG
+  #  logging.level.org.hibernate.SQL= INFO
 
   ## Jackson Properties
   spring:
@@ -47,9 +47,9 @@
       time-zone: UTC
 
     jpa:
-      hibernate: 
+      hibernate:
         ddl-auto: update
-    
+
     datasource:
       url: jdbc:mysql://localhost:3306/ryswap
       username: root

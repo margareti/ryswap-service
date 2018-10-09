@@ -24,6 +24,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Example;
 
 @SpringBootApplication
 
@@ -36,10 +37,10 @@ public class RYSwapApplication {
     SpringApplication.run(RYSwapApplication.class, args);
   }
 
-  // @EventListener(ApplicationReadyEvent.class)
-  // public void doAfterStartup() {
-  //   roleRepository.save(new UserRole(UserRoleName.ROLE_USER) );
-
-  // }
+   @EventListener(ApplicationReadyEvent.class)
+   public void doAfterStartup() {
+    if(!roleRepository.exists(Example.of(new UserRole(UserRoleName.ROLE_USER))))
+        roleRepository.save(new UserRole(UserRoleName.ROLE_USER));
+   }
 }
 
