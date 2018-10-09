@@ -1,10 +1,10 @@
 package com.example.demo.users;
 
-import com.example.demo.users.auth.UserRole;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.example.demo.security.auth.UserRole;
 
 @Entity
 public class User {

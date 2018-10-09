@@ -15,9 +15,9 @@
  */
 package com.example.demo;
 
-import com.example.demo.users.auth.RoleRepository;
-import com.example.demo.users.auth.UserRole;
-import com.example.demo.users.auth.UserRoleName;
+import com.example.demo.security.auth.RoleRepository;
+import com.example.demo.security.auth.UserRole;
+import com.example.demo.security.auth.UserRoleName;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;

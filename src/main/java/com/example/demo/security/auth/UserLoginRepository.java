@@ -1,6 +1,6 @@
-package com.example.demo.users.auth;
+package com.example.demo.security.auth;
 
-import com.example.demo.users.auth.UserLogin;
+import com.example.demo.users.login.UserLogin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

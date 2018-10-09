@@ -1,4 +1,4 @@
-package com.example.demo.users.signup;
+package com.example.demo.users.register;
 
 import java.net.URI;
 import java.util.Collections;
@@ -8,11 +8,11 @@ import javax.validation.Valid;
 import com.example.demo.OperationResult;
 import com.example.demo.users.User;
 import com.example.demo.users.UserRepository;
-import com.example.demo.users.auth.RoleRepository;
-import com.example.demo.users.auth.UserLogin;
-import com.example.demo.users.auth.UserLoginRepository;
-import com.example.demo.users.auth.UserRole;
-import com.example.demo.users.auth.UserRoleName;
+import com.example.demo.security.auth.RoleRepository;
+import com.example.demo.users.login.UserLogin;
+import com.example.demo.security.auth.UserLoginRepository;
+import com.example.demo.security.auth.UserRole;
+import com.example.demo.security.auth.UserRoleName;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api")
-public class SignUpController {
+public class RegisterUserController {
 
   @Autowired 
   private UserLoginRepository userLoginRepository;
@@ -41,13 +41,13 @@ public class SignUpController {
   
   
   @PostMapping("/registerUser")
-  public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-      if (userLoginRepository.existsByUsername(signUpRequest.getEmail())) {
+  public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUserRequest registerUserRequest) {
+      if (userLoginRepository.existsByUsername(registerUserRequest.getEmail())) {
           return OperationResult.error("", "Username already taken!");
       }
 
       // Creating user's account
-      User user = new User(signUpRequest.getName(), signUpRequest.getEmail());
+      User user = new User(registerUserRequest.getName(), registerUserRequest.getEmail());
       UserRole userUserRole = roleRepository.findByName(UserRoleName.ROLE_USER)
               .orElseThrow(() -> new RuntimeException("User UserRole not set."));
       user.setUserRoles(Collections.singleton(userUserRole));
@@ -55,8 +55,8 @@ public class SignUpController {
 
       UserLogin userLogin = new UserLogin();
       userLogin.setUser(user);
-      userLogin.setUsername(signUpRequest.getEmail());
-      userLogin.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+      userLogin.setUsername(registerUserRequest.getEmail());
+      userLogin.setPassword(passwordEncoder.encode(registerUserRequest.getPassword()));
       userLoginRepository.save(userLogin);
 
       URI location = ServletUriComponentsBuilder

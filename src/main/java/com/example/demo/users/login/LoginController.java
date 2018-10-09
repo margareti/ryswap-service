@@ -2,7 +2,7 @@ package com.example.demo.users.login;
 
 import com.example.demo.security.jwt.JwtTokenProvider;
 import com.example.demo.users.UserRepository;
-import com.example.demo.users.auth.*;
+import com.example.demo.security.auth.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

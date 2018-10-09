@@ -1,10 +1,10 @@
-package com.example.demo.users.signup;
+package com.example.demo.users.register;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class SignUpRequest {
+public class RegisterUserRequest {
 
     @Size(min = 4, max = 40)
     private String name;

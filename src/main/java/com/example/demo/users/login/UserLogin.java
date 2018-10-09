@@ -1,4 +1,4 @@
-package com.example.demo.users.auth;
+package com.example.demo.users.login;
 
 import com.example.demo.users.User;
 

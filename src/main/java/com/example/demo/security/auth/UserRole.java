@@ -1,4 +1,4 @@
-package com.example.demo.users.auth;
+package com.example.demo.security.auth;
 
 import org.hibernate.annotations.NaturalId;
 
