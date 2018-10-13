@@ -1,4 +1,4 @@
-package com.example.demo.security.auth;
+package com.example.demo.users.login;
 
 import com.example.demo.users.login.UserLogin;
 import org.springframework.data.jpa.repository.JpaRepository;

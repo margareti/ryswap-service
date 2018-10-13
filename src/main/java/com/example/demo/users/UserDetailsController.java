@@ -1,7 +1,7 @@
 package com.example.demo.users;
 
 
-import com.example.demo.security.auth.UserLoginRepository;
+import com.example.demo.users.login.UserLoginRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

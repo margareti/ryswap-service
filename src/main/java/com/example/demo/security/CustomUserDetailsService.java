@@ -3,7 +3,7 @@ package com.example.demo.security;
 import com.example.demo.ResourceNotFoundException;
 import com.example.demo.users.UserRepository;
 import com.example.demo.users.login.UserLogin;
-import com.example.demo.security.auth.UserLoginRepository;
+import com.example.demo.users.login.UserLoginRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
