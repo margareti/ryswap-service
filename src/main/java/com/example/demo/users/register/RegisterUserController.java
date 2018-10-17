@@ -10,7 +10,7 @@ import com.example.demo.users.User;
 import com.example.demo.users.UserRepository;
 import com.example.demo.security.auth.RoleRepository;
 import com.example.demo.users.login.UserLogin;
-import com.example.demo.security.auth.UserLoginRepository;
+import com.example.demo.users.login.UserLoginRepository;
 import com.example.demo.security.auth.UserRole;
 import com.example.demo.security.auth.UserRoleName;
 
