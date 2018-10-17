@@ -32,7 +32,7 @@ public class FlightsService {
 
     List<Flight> newFlights = routeTimes.stream()
         .filter(r -> existingFlights.stream().noneMatch(f -> f.getFlightRouteTime().equals(r)))
-        .map(frt -> createFligt(frt, date))
+        .map(frt -> createFlight(frt, date))
         .collect(Collectors.toList());
 
 
@@ -45,7 +45,7 @@ public class FlightsService {
   }
 
 
-   private Flight createFligt(FlightRouteTime flightRouteTime, LocalDate date){
+   private Flight createFlight(FlightRouteTime flightRouteTime, LocalDate date){
      Flight flight = new Flight();
      flight.setFlightRouteTime(flightRouteTime);
      flight.setFlightDate(date);
