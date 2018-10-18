@@ -4,6 +4,8 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import com.example.demo.flights.route.FlightRouteTime;
+
 @Entity
 public class Flight {
 

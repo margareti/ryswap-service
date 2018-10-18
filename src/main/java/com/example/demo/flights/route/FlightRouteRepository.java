@@ -1,5 +1,6 @@
-package com.example.demo.flights;
+package com.example.demo.flights.route;
 
+import com.example.demo.flights.airport.Airport;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

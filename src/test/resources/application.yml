@@ -37,7 +37,11 @@
 #  server.compression.enabled=true
 
   ## Hibernate Logging
-  #  logging.level.org.hibernate.SQL= INFO
+# logging:
+#  level:
+#    org:
+#      hibernate:
+#        SQL:  INFO
 
   ## Jackson Properties
   spring:
@@ -45,16 +49,6 @@
       serialization:
         WRITE_DATES_AS_TIMESTAMPS: false
       time-zone: UTC
-    jpa:
-      properties:
-        hibernate:
-          show_sql: true
-          format_sql: true
-  logging:
-    level:
-      org:
-        hibernate:
-          type: trace
 
 #    jpa:
 #      hibernate:
@@ -64,6 +58,7 @@
 #      url: jdbc:mysql://localhost:3306/ryswap
 #      username: root
 #      password: root
+
 
   ## App Properties
   app:

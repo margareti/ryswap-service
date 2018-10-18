@@ -1,9 +1,11 @@
-package com.example.demo.flights;
+package com.example.demo.flights.route;
 
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+
+import com.example.demo.flights.airport.Airport;
 
 @Entity
 public class FlightRoute {
@@ -18,7 +20,7 @@ public class FlightRoute {
   @ManyToOne
   private Airport destination;
 
-  @OneToMany(mappedBy = "flightRoute")
+  @OneToMany(mappedBy = "flightRoute", cascade = CascadeType.ALL)
   private List<FlightRouteTime> flightRouteTimes;
 
   public List<FlightRouteTime> getFlightRouteTimes() {
