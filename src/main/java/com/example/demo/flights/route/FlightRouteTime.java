@@ -1,4 +1,4 @@
-package com.example.demo.flights;
+package com.example.demo.flights.route;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -71,7 +71,7 @@ public class FlightRouteTime {
   public String toString() {
     return "FlightRouteTime{" +
         "id=" + id +
-        ", flightRoute=" + flightRoute.getId() +
+        ", flightRoute=" + flightRoute  +
         ", weekday=" + dayOfWeek +
         ", time=" + time +
         '}';

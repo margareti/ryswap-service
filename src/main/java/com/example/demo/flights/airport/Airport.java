@@ -1,4 +1,4 @@
-package com.example.demo.flights;
+package com.example.demo.flights.airport;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

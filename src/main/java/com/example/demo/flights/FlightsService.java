@@ -1,5 +1,8 @@
 package com.example.demo.flights;
 
+import com.example.demo.flights.route.FlightRoute;
+import com.example.demo.flights.route.FlightRouteRepository;
+import com.example.demo.flights.route.FlightRouteTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
