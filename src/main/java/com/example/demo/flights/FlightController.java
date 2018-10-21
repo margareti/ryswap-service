@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -25,25 +27,19 @@ public class FlightController {
   }
 
   @GetMapping("/flights")
-  public List<Flight> getFlightsByRouteAndDate(@RequestParam("origin") Long origin,
+  public List<FoundFlight> getFlightsByRouteAndDate(@RequestParam("origin") Long origin,
                                                @RequestParam("destination") Long destination,
                                                @RequestParam("date")
                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-    return flightsService.getFlightsByRouteAndDate(origin, destination, date);
+    List<Flight> flights = flightsService.getFlightsByRouteAndDate(origin, destination, date);
+
+    return flights.stream().map(f ->
+        new FoundFlight(f.getId(),
+            f.getFlightRouteTime().getFlightRoute().getOrigin(),
+            f.getFlightRouteTime().getFlightRoute().getDestination(),
+            LocalDateTime.of(f.getFlightDate(), f.getFlightRouteTime().getTime())
+        )
+    ).collect(Collectors.toList());
   }
 
-
-//
-//  TODO save flightId to user. at the point of saving flight, available flights for
-//  certain date should have IDs.
-//  so, in effect. this will be "get flight by id" and save flight to user"
-//  @GetMapping("/get-flight-by-datetime-and-route")
-//  public Flight getFlightByDatetimeAndRoute(LocalDateTime datetime, Long routeId) {
-//    return flightRepository.f
-//  }
-//
-//  @PostMapping("/add-flight")
-//  public Flight addFlight(Flight flight) {
-//    return flightRepository
-//  }
 }
