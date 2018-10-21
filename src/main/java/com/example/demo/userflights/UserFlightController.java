@@ -39,7 +39,7 @@ public class UserFlightController {
     User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
     Flight flight = flightRepository.findById(id).get();
 
-    if (userFlightRepository.findByUserAndFlight(user, flight) != null) {
+    if (userFlightRepository.findByUserAndFlight(user, flight) == null) {
       UserFlight userFlight = new UserFlight();
       userFlight.setUser(user);
       userFlight.setFlight(flight);
