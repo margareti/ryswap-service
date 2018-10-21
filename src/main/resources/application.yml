@@ -50,25 +50,26 @@
         hibernate:
           show_sql: true
           format_sql: true
+    datasource:
+      url: jdbc:mysql://localhost:3306/ryswap
+      username: root
+      password: root
+
   logging:
     level:
       org:
         hibernate:
           type: trace
 
-#    jpa:
-#      hibernate:
-#        ddl-auto: update
-#
-#    datasource:
-#      url: jdbc:mysql://localhost:3306/ryswap
-#      username: root
-#      password: root
+    jpa:
+      hibernate:
+        ddl-auto: update
+
+
 
   ## App Properties
   app:
     jwtSecret: auuuusecret
-
     jwtExpirationInMs: 604800000
 
 ## Spring Profiles

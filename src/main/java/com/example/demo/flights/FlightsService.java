@@ -17,8 +17,8 @@ public class FlightsService {
   @Autowired private FlightRepository flightRepository;
   @Autowired private FlightRouteRepository flightRouteRepository;
 
-  public List<Flight> getFlightsByRouteAndDate(Long routeId, LocalDate date) {
-    FlightRoute route = flightRouteRepository.findById(routeId).get();
+  public List<Flight> getFlightsByRouteAndDate(Long origin, Long destination, LocalDate date) {
+    FlightRoute route = flightRouteRepository.findByOriginAndDestination(origin, destination).get();
     // {id: 2, origin: AirportObj, dest: AirportObj, flightRouteTime: [{id: 2, flightRoute: this, dayOfWeek: 2, time: 22h30}]}
     DayOfWeek dayOfWeek = date.getDayOfWeek(); //2
 

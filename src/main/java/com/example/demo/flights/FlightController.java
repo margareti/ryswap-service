@@ -25,10 +25,11 @@ public class FlightController {
   }
 
   @GetMapping("/flights")
-  public List<Flight> getFlightsByRouteAndDate(@RequestParam("routeId") Long routeId,
+  public List<Flight> getFlightsByRouteAndDate(@RequestParam("origin") Long origin,
+                                               @RequestParam("destination") Long destination,
                                                @RequestParam("date")
                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-    return flightsService.getFlightsByRouteAndDate(routeId, date);
+    return flightsService.getFlightsByRouteAndDate(origin, destination, date);
   }
 
 
