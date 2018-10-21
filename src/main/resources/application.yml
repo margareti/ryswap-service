@@ -50,6 +50,8 @@
         hibernate:
           show_sql: true
           format_sql: true
+      hibernate:
+        ddl-auto: update
     datasource:
       url: jdbc:mysql://localhost:3306/ryswap
       username: root
@@ -61,9 +63,7 @@
         hibernate:
           type: trace
 
-    jpa:
-      hibernate:
-        ddl-auto: update
+
 
 
 
