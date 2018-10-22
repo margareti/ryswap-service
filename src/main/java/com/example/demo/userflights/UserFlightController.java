@@ -7,6 +7,7 @@ import com.example.demo.users.User;
 import com.example.demo.users.UserRepository;
 import com.example.demo.users.login.UserLoginRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,7 @@ public class UserFlightController {
 
 
   @PostMapping("/user/flights/{flightId}")
-  public FoundFlight addFlightToUser(@Autowired Principal principal, @PathVariable("flightId") Long id) {
+  public ResponseEntity<FoundFlight> addFlightToUser(@Autowired Principal principal, @PathVariable("flightId") Long id) {
 
     User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
     Flight flight = flightRepository.findById(id).get();
@@ -44,9 +45,9 @@ public class UserFlightController {
       userFlight.setUser(user);
       userFlight.setFlight(flight);
       userFlightRepository.save(userFlight);
-      return createFoundFlight(userFlight);
+      return ResponseEntity.ok(createFoundFlight(userFlight));
     }
-    return null;
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
   }
 
   @GetMapping("/user/flights")
