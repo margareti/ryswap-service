@@ -34,7 +34,7 @@ public class UserFlightController {
 
 
   @PostMapping("/user/flights/{flightId}")
-  public void addFlightToUser(@Autowired Principal principal, @PathVariable("flightId") Long id) {
+  public FoundFlight addFlightToUser(@Autowired Principal principal, @PathVariable("flightId") Long id) {
 
     User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
     Flight flight = flightRepository.findById(id).get();
@@ -44,7 +44,9 @@ public class UserFlightController {
       userFlight.setUser(user);
       userFlight.setFlight(flight);
       userFlightRepository.save(userFlight);
+      return createFoundFlight(userFlight);
     }
+    return null;
   }
 
   @GetMapping("/user/flights")
@@ -52,11 +54,15 @@ public class UserFlightController {
     User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
     return userFlightRepository
         .findByUser(user).stream()
-        .map(uf -> new FoundFlight(uf.getFlight().getId(),
-            uf.getFlight().getFlightRouteTime().getFlightRoute().getOrigin(),
-            uf.getFlight().getFlightRouteTime().getFlightRoute().getDestination(),
-            LocalDateTime.of(uf.getFlight().getFlightDate(), uf.getFlight().getFlightRouteTime().getTime())))
+        .map(uf -> createFoundFlight(uf))
         .collect(Collectors.toList());
+  }
+
+  private FoundFlight createFoundFlight(UserFlight uf) {
+    return new FoundFlight(uf.getFlight().getId(),
+        uf.getFlight().getFlightRouteTime().getFlightRoute().getOrigin(),
+        uf.getFlight().getFlightRouteTime().getFlightRoute().getDestination(),
+        LocalDateTime.of(uf.getFlight().getFlightDate(), uf.getFlight().getFlightRouteTime().getTime()));
   }
 
 }
