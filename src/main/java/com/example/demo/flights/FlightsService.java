@@ -19,19 +19,14 @@ public class FlightsService {
 
   public List<Flight> getFlightsByRouteAndDate(Long origin, Long destination, LocalDate date) {
     FlightRoute route = flightRouteRepository.findByOriginAndDestination(origin, destination).get();
-    // {id: 2, origin: AirportObj, dest: AirportObj, flightRouteTime: [{id: 2, flightRoute: this, dayOfWeek: 2, time: 22h30}]}
-    DayOfWeek dayOfWeek = date.getDayOfWeek(); //2
+    DayOfWeek dayOfWeek = date.getDayOfWeek();
 
     List<FlightRouteTime> routeTimes = route
         .getFlightRouteTimes().stream()
         .filter(f -> f.getDayOfWeek() == dayOfWeek).collect(Collectors.toList());
 
-    //[{id: 2, flightRoute: {}, dayOfWeek: 2, time: 10h30}, {id: 2, flightRoute: {}, dayOfWeek: 2, time: 22h30}]
 
-//    routeTimes.forEach(route -> flightRepository.createFlight());
-//
     List<Flight> existingFlights = flightRepository.findByFlightDateAndFlightRouteTime(date, routeTimes);
-    //[{id: 3, flightRouteTime: {flightRoute: {}, ...}, datetime: 31/08/18 22h30}]
 
     List<Flight> newFlights = routeTimes.stream()
         .filter(r -> existingFlights.stream().noneMatch(f -> f.getFlightRouteTime().equals(r)))
