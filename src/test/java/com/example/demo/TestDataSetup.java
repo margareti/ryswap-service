@@ -27,7 +27,6 @@ import com.example.demo.users.login.UserLoginRepository;
 import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import sun.rmi.server.UnicastServerRef;
 
 @Component
 public final class TestDataSetup {

@@ -12,12 +12,12 @@ public final class BasicServerTest extends  SpringBootBaseIntegrationTest{
 
     private String infoResult;
 
-    @When("^I ask is the servier up?$")
+    @When("^I ask if the server is up$")
     public void checkServerUp() {
       this.infoResult =   withEndpoint("/info").getSomething(String.class);
     }
 
-    @Then("the servier is up")
+    @Then("the server is up")
     public void isTheServerUp() {
         assertNotNull(infoResult);
     }
