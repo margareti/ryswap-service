@@ -18,6 +18,17 @@ public class RegisterUserRequest {
     @Size(min = 6, max = 20)
     private String password;
 
+    public RegisterUserRequest() {
+    }
+
+    public RegisterUserRequest(@Size(min = 4, max = 40) String name,
+            @NotBlank @Size(max = 40) @Email String email,
+            @NotBlank @Size(min = 6, max = 20) String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
     public String getName() {
         return name;
     }

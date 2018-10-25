@@ -139,8 +139,8 @@ public final class TestDataSetup {
         return user;
     }
 
-    private UserRole getUserRole() {
-    return roleRepository.findByName(UserRoleName.ROLE_USER)
+    public UserRole getUserRole() {
+        return roleRepository.findByName(UserRoleName.ROLE_USER)
             .orElse(roleRepository.save(new UserRole(UserRoleName.ROLE_USER)));
     }
 }
