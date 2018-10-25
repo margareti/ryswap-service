@@ -55,17 +55,15 @@
     datasource:
       url: jdbc:mysql://localhost:3306/ryswap
       username: root
-      password: root
+      password: rootroot
+    flyway:
+      baselineOnMigrate: true
 
   logging:
     level:
       org:
         hibernate:
           type: trace
-
-
-
-
 
   ## App Properties
   app:
