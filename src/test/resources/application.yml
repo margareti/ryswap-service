@@ -27,9 +27,11 @@
 #  resource:
 #    userInfoUri: https://api.github.com/user
 #
-#logging:
-#  level:
-#    org.springframework.security: DEBUG
+  logging:
+    level:
+      root: WARN
+      com:
+        example: DEBUG
 
 
   ## Server Properties
@@ -49,10 +51,13 @@
       serialization:
         WRITE_DATES_AS_TIMESTAMPS: false
       time-zone: UTC
-
-#    jpa:
-#      hibernate:
-#        ddl-auto: update
+    jpa:
+      properties:
+        hibernate:
+          show_sql: true
+          format_sql: true
+      hibernate:
+        ddl-auto: update
 #
 #    datasource:
 #      url: jdbc:mysql://localhost:3306/ryswap
