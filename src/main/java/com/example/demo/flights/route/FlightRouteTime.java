@@ -1,5 +1,6 @@
 package com.example.demo.flights.route;
 
+import com.example.demo.flights.seats.SeatsConfiguration;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -21,6 +22,9 @@ public class FlightRouteTime {
 
   private DayOfWeek dayOfWeek;
   private LocalTime time;
+
+  @ManyToOne
+  private SeatsConfiguration seatsConfiguration;
 
   public Long getId() {
     return id;
@@ -52,6 +56,14 @@ public class FlightRouteTime {
 
   public void setTime(LocalTime time) {
     this.time = time;
+  }
+
+  public SeatsConfiguration getSeatsConfiguration() {
+    return seatsConfiguration;
+  }
+
+  public void setSeatsConfiguration(SeatsConfiguration seatsConfiguration) {
+    this.seatsConfiguration = seatsConfiguration;
   }
 
   @Override
