@@ -66,6 +66,16 @@ public class SwapRequest {
         this.swapRequestStatus = swapRequestStatus;
     }
 
+    public SwapRequest() {
+    }
+
+    public SwapRequest(UserFlight userFlight, Seat currentSeat, Seat targetSeat, SwapRequestStatus swapRequestStatus) {
+        this.userFlight = userFlight;
+        this.currentSeat = currentSeat;
+        this.targetSeat = targetSeat;
+        this.swapRequestStatus = swapRequestStatus;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
