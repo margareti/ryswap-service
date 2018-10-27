@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 import com.example.demo.flights.route.FlightRouteTime;
-import com.example.demo.flights.seats.SeatsConfiguration;
 
 @Entity
 public class Flight {
@@ -18,9 +17,6 @@ public class Flight {
   private FlightRouteTime flightRouteTime;
 
   private LocalDate flightDate;
-
-  @ManyToOne
-  private SeatsConfiguration seatsConfiguration;
 
   public Long getId() {
     return id;
@@ -44,14 +40,6 @@ public class Flight {
 
   public void setFlightDate(LocalDate flightDate) {
     this.flightDate = flightDate;
-  }
-
-  public SeatsConfiguration getSeatsConfiguration() {
-    return seatsConfiguration;
-  }
-
-  public void setSeatsConfiguration(SeatsConfiguration seatsConfiguration) {
-    this.seatsConfiguration = seatsConfiguration;
   }
 
   @Override

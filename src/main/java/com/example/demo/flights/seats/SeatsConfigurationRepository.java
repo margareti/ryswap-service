@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface SeatsConfigurationRepository extends JpaRepository <SeatsConfiguration, Long> {
 
-        @Query("select f.seatsConfiguration from Flight f where f.id = :flightId ")
+        @Query("select f.flightRouteTime.seatsConfiguration from Flight f where f.id = :flightId ")
         Optional<SeatsConfiguration> findByFlightId(@Param("flightId") Long flightId);
 }
 
