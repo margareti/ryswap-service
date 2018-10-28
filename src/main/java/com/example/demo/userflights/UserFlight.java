@@ -15,6 +15,7 @@ public class UserFlight {
 
   @ManyToOne
   private User user;
+
   @ManyToOne
   private Flight flight;
 

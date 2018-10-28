@@ -32,10 +32,13 @@ public class UserFlightController {
   @Autowired
   private UserFlightRepository userFlightRepository;
 
+  @Autowired
+  private SwapRequestRepository swapRequestRepository;
+
 
 
   @PostMapping("/user/flights/{flightId}")
-  public ResponseEntity<FoundFlight> addFlightToUser(@Autowired Principal principal, @PathVariable("flightId") Long id) {
+  public ResponseEntity<MyFlightResponse> addFlightToUser(@Autowired Principal principal, @PathVariable("flightId") Long id) {
 
     User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
     Flight flight = flightRepository.findById(id).get();
@@ -45,17 +48,17 @@ public class UserFlightController {
       userFlight.setUser(user);
       userFlight.setFlight(flight);
       userFlightRepository.save(userFlight);
-      return ResponseEntity.ok(createFoundFlight(userFlight));
+      return ResponseEntity.ok(createMyFlightResponse(userFlight));
     }
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
   }
 
   @GetMapping("/user/flights")
-  public List<FoundFlight> getUserFlights(@Autowired Principal principal) {
+  public List<MyFlightResponse> getUserFlights(@Autowired Principal principal) {
     User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
     return userFlightRepository
         .findByUser(user).stream()
-        .map(uf -> createFoundFlight(uf))
+        .map(uf -> createMyFlightResponse(uf))
         .collect(Collectors.toList());
   }
 
@@ -64,6 +67,15 @@ public class UserFlightController {
         uf.getFlight().getFlightRouteTime().getFlightRoute().getOrigin(),
         uf.getFlight().getFlightRouteTime().getFlightRoute().getDestination(),
         LocalDateTime.of(uf.getFlight().getFlightDate(), uf.getFlight().getFlightRouteTime().getTime()));
+  }
+
+  private MyFlightResponse createMyFlightResponse(UserFlight uf) {
+    FoundFlight foundFlight = new FoundFlight(uf.getFlight().getId(),
+        uf.getFlight().getFlightRouteTime().getFlightRoute().getOrigin(),
+        uf.getFlight().getFlightRouteTime().getFlightRoute().getDestination(),
+        LocalDateTime.of(uf.getFlight().getFlightDate(), uf.getFlight().getFlightRouteTime().getTime()));
+    List<SwapRequest> mySeats = swapRequestRepository.findByFlightId(uf.getFlight().getId());
+    return new MyFlightResponse(uf.getFlight().getId(), foundFlight, mySeats);
   }
 
 }
