@@ -4,6 +4,7 @@ import com.example.demo.flights.Flight;
 import com.example.demo.users.User;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -18,6 +19,9 @@ public class UserFlight {
 
   @ManyToOne
   private Flight flight;
+
+  @OneToMany(mappedBy = "userFlight")
+  private List<SwapRequest> swapRequests;
 
   public Long getId() {
     return id;
@@ -63,5 +67,13 @@ public class UserFlight {
         ", user=" + user +
         ", flight=" + flight +
         '}';
+  }
+
+  public List<SwapRequest> getSwapRequests() {
+    return swapRequests;
+  }
+
+  public void setSwapRequests(List<SwapRequest> swapRequests) {
+    this.swapRequests = swapRequests;
   }
 }

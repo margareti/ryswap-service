@@ -50,7 +50,7 @@ public class SwapRequestController {
     }
 
     @PostMapping("/flight/{flightId}/my-seats")
-    public List<SwapRequest> addMySeats(
+    public void  addMySeats(
         @PathVariable("flightId") Long flightId,
         @RequestBody List<Long> seatIds,
         @Autowired Principal principal) {
@@ -58,18 +58,28 @@ public class SwapRequestController {
         User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
         Flight flight = flightRepository.findById(flightId).get();
         UserFlight userFlight = userFlightRepository.findByUserAndFlight(user, flight);
-        return seatIds
+        userFlight.getSwapRequests().stream()
+            .filter(sr -> !seatIds.stream()
+                .filter(si -> sr.getSwapRequestStatus() == SwapRequestStatus.ACCEPTED &&
+                    sr.getTargetSeat().getId().equals(si)).findFirst().isPresent())
+            .peek(sr -> swapRequestRepository.delete(sr)).collect(Collectors.toList());
+
+          seatIds
             .stream()
+            .filter( sid -> ! userFlight.getSwapRequests().stream().filter(sr -> sr.getTargetSeat().getId().equals(sid)// :todo check accepted if needed
+            ).filter(sr -> sr.getSwapRequestStatus() == SwapRequestStatus.ACCEPTED).findFirst().isPresent() )
             .map(si -> new SwapRequest(userFlight, null, seatRepository.findById(si).get(), SwapRequestStatus.ACCEPTED))
             .peek(swapRequest -> swapRequestRepository.save(swapRequest)).collect(Collectors.toList());
+
+
 
     }
 
     private List<SwapRequest> filterOutboundSwapRequestsBySeatId(List<SwapRequest> swapRequests, Seat seat) {
-        return swapRequests.stream().filter(sr -> sr.getCurrentSeat().equals(seat)).collect(Collectors.toList());
+        return swapRequests.stream().filter(sr -> sr.getCurrentSeat() != null && sr.getCurrentSeat().equals(seat)).collect(Collectors.toList());
     }
 
     private List<SwapRequest> filterInboundSwapRequestsBySeatId(List<SwapRequest> swapRequests, Seat seat) {
-        return swapRequests.stream().filter(sr -> sr.getTargetSeat().equals(seat)).collect(Collectors.toList());
+        return swapRequests.stream().filter(sr -> sr.getTargetSeat() != null && sr.getTargetSeat().equals(seat)).collect(Collectors.toList());
     }
 }
