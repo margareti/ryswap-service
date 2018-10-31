@@ -58,7 +58,8 @@ public class UserFlightController {
   public List<MyFlightResponse> getUserFlights(@Autowired Principal principal) {
     User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
     return userFlightRepository
-        .findByUser(user).stream()
+        .findByUser(user)
+        .stream()
         .map(uf -> createMyFlightResponse(uf))
         .collect(Collectors.toList());
   }
