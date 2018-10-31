@@ -1,6 +1,7 @@
 package com.example.demo.userflights;
 
 import com.example.demo.flights.seats.Seat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -12,6 +13,7 @@ public class SwapRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     private UserFlight userFlight;
 
