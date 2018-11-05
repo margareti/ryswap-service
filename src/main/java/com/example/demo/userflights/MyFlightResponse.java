@@ -1,6 +1,7 @@
 package com.example.demo.userflights;
 
 import com.example.demo.flights.FoundFlight;
+import com.example.demo.flights.seats.Seat;
 
 import java.util.List;
 import java.util.Objects;
@@ -9,7 +10,7 @@ public class MyFlightResponse {
 
   private Long id;
   private FoundFlight flight;
-  private List<SwapRequest> mySeats;
+  private List<Seat> mySeats;
 
   public Long getId() {
     return id;
@@ -27,11 +28,11 @@ public class MyFlightResponse {
     this.flight = flight;
   }
 
-  public List<SwapRequest> getMySeats() {
+  public List<Seat> getMySeats() {
     return mySeats;
   }
 
-  public void setMySeats(List<SwapRequest> mySeats) {
+  public void setMySeats(List<Seat> mySeats) {
     this.mySeats = mySeats;
   }
 
@@ -57,7 +58,7 @@ public class MyFlightResponse {
         '}';
   }
 
-  public MyFlightResponse(Long id, FoundFlight flight, List<SwapRequest> mySeats) {
+  public MyFlightResponse(Long id, FoundFlight flight, List<Seat> mySeats) {
     this.id = id;
     this.flight = flight;
     this.mySeats = mySeats;

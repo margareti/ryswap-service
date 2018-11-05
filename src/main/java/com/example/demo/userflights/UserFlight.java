@@ -1,6 +1,7 @@
 package com.example.demo.userflights;
 
 import com.example.demo.flights.Flight;
+import com.example.demo.userflights.swaprequest.SwapRequest;
 import com.example.demo.users.User;
 
 import javax.persistence.*;
