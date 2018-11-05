@@ -12,7 +12,8 @@ public class Seat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String seatNumber;
+    private Integer row;
+    private String column;
 
     @JsonIgnore
     @ManyToOne
@@ -26,13 +27,6 @@ public class Seat {
         this.id = id;
     }
 
-    public String getSeatNumber() {
-        return seatNumber;
-    }
-
-    public void setSeatNumber(String seatNumber) {
-        this.seatNumber = seatNumber;
-    }
 
     public SeatsConfiguration getSeatsConfiguration() {
         return seatsConfiguration;
@@ -40,6 +34,22 @@ public class Seat {
 
     public void setSeatsConfiguration(SeatsConfiguration seatsConfiguration) {
         this.seatsConfiguration = seatsConfiguration;
+    }
+
+    public Integer getRow() {
+        return row;
+    }
+
+    public void setRow(Integer row) {
+        this.row = row;
+    }
+
+    public String getColumn() {
+        return column;
+    }
+
+    public void setColumn(String column) {
+        this.column = column;
     }
 
     @Override
@@ -58,8 +68,9 @@ public class Seat {
     @Override
     public String toString() {
         return "Seat{" +
-                "id=" + id +
-                ", seatNumber='" + seatNumber + '\'' +
-                '}';
+            "id=" + id +
+            ", row=" + row +
+            ", column='" + column + '\'' +
+            '}';
     }
 }

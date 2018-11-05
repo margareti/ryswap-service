@@ -2,10 +2,12 @@ package com.example.demo.flights.route;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 
 import com.example.demo.flights.airport.Airport;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Entity
 public class FlightRoute {
@@ -14,9 +16,11 @@ public class FlightRoute {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @NotNull
   @ManyToOne
   private Airport origin;
 
+  @NotNull
   @ManyToOne
   private Airport destination;
 

@@ -1,6 +1,7 @@
 package com.example.demo.flights;
 
 import com.example.demo.flights.airport.Airport;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.time.LocalDateTime;
 

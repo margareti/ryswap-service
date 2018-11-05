@@ -1,44 +1,68 @@
 package com.example.demo.userflights;
 
 import com.example.demo.flights.seats.Seat;
+import com.example.demo.userflights.swaprequest.SwapRequest;
 
 import java.util.List;
 
 public class FlightSeat {
-    private Seat seat;
-    private List<SwapRequest> inboundSwapRequests;
 
-    private List<SwapRequest> outboundSwapRequests;
+  private Seat seat;
 
-    public FlightSeat(Seat seat, List<SwapRequest> inboundSwapRequests, List<SwapRequest> outboundSwapRequests) {
-        this.seat = seat;
-        this.inboundSwapRequests = inboundSwapRequests;
-        this.outboundSwapRequests = outboundSwapRequests;
-    }
+  boolean isOccupied;
+  boolean belongsToUser;
 
-    public Seat getSeat() {
-        return seat;
-    }
+  public FlightSeat() {
+  }
 
-    public void setSeat(Seat seat) {
-        this.seat = seat;
-    }
-
-    public List<SwapRequest> getInboundSwapRequests() {
-        return inboundSwapRequests;
-    }
-
-    public void setInboundSwapRequests(List<SwapRequest> inboundSwapRequests) {
-        this.inboundSwapRequests = inboundSwapRequests;
-    }
-
-    public List<SwapRequest> getOutboundSwapRequests() {
-        return outboundSwapRequests;
-    }
-
-    public void setOutboundSwapRequests(List<SwapRequest> outboundSwapRequests) {
-        this.outboundSwapRequests = outboundSwapRequests;
-    }
+  public FlightSeat(
+      Seat seat,
+      Boolean isOccupied,
+      Boolean belongsToUser) {
+    this.seat = seat;
+    this.isOccupied = isOccupied;
+    this.belongsToUser = belongsToUser;
+  }
 
 
+  public FlightSeat seat(Seat seat) {
+    this.setSeat(seat);
+    return this;
+  }
+
+  public FlightSeat occupied(boolean occupied) {
+    this.setOccupied(occupied);
+    return this;
+  }
+
+
+  public FlightSeat doesBelongToUser(boolean belongsToUser) {
+    this.setBelongsToUser(belongsToUser);
+    return this;
+  }
+
+
+  public Seat getSeat() {
+    return seat;
+  }
+
+  public void setSeat(Seat seat) {
+    this.seat = seat;
+  }
+
+  public boolean isBelongsToUser() {
+    return belongsToUser;
+  }
+
+  public void setBelongsToUser(boolean belongsToUser) {
+    this.belongsToUser = belongsToUser;
+  }
+
+  public boolean isOccupied() {
+    return isOccupied;
+  }
+
+  public void setOccupied(boolean occupied) {
+    isOccupied = occupied;
+  }
 }

@@ -1,6 +1,7 @@
-package com.example.demo.userflights;
+package com.example.demo.userflights.swaprequest;
 
 import com.example.demo.flights.seats.Seat;
+import com.example.demo.userflights.UserFlight;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;

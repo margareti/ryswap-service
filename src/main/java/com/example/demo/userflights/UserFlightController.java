@@ -3,24 +3,30 @@ package com.example.demo.userflights;
 import com.example.demo.flights.Flight;
 import com.example.demo.flights.FlightRepository;
 import com.example.demo.flights.FoundFlight;
+import com.example.demo.flights.seats.Seat;
+import com.example.demo.userflights.swaprequest.SwapRequest;
+import com.example.demo.userflights.swaprequest.SwapRequestRepository;
 import com.example.demo.users.User;
 import com.example.demo.users.UserRepository;
 import com.example.demo.users.login.UserLoginRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
 public class UserFlightController {
+
+  private static final Logger logger = LoggerFactory.getLogger(UserFlightController.class);
+
   @Autowired
   private UserRepository userRepository;
 
@@ -56,19 +62,18 @@ public class UserFlightController {
 
   @GetMapping("/user/flights")
   public List<MyFlightResponse> getUserFlights(@Autowired Principal principal) {
+    logger.info("start get user flights");
     User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
-    return userFlightRepository
+    logger.info("user found");
+    List<MyFlightResponse> myFlights = userFlightRepository
         .findByUser(user)
         .stream()
         .map(uf -> createMyFlightResponse(uf))
         .collect(Collectors.toList());
-  }
 
-  private FoundFlight createFoundFlight(UserFlight uf) {
-    return new FoundFlight(uf.getFlight().getId(),
-        uf.getFlight().getFlightRouteTime().getFlightRoute().getOrigin(),
-        uf.getFlight().getFlightRouteTime().getFlightRoute().getDestination(),
-        LocalDateTime.of(uf.getFlight().getFlightDate(), uf.getFlight().getFlightRouteTime().getTime()));
+    logger.info("get user flights end");
+    return myFlights;
+
   }
 
   private MyFlightResponse createMyFlightResponse(UserFlight uf) {
@@ -76,7 +81,7 @@ public class UserFlightController {
         uf.getFlight().getFlightRouteTime().getFlightRoute().getOrigin(),
         uf.getFlight().getFlightRouteTime().getFlightRoute().getDestination(),
         LocalDateTime.of(uf.getFlight().getFlightDate(), uf.getFlight().getFlightRouteTime().getTime()));
-    List<SwapRequest> mySeats = swapRequestRepository.findByUserFlight(uf);
+    List<Seat> mySeats = swapRequestRepository.findByUserFlight(uf).stream().map(sw -> sw.getTargetSeat()).collect(Collectors.toList());
     return new MyFlightResponse(uf.getFlight().getId(), foundFlight, mySeats);
   }
 

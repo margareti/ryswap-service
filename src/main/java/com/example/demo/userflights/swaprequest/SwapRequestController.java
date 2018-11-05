@@ -1,4 +1,4 @@
-package com.example.demo.userflights;
+package com.example.demo.userflights.swaprequest;
 
 import com.example.demo.flights.Flight;
 import com.example.demo.flights.FlightRepository;
@@ -6,6 +6,9 @@ import com.example.demo.flights.seats.Seat;
 import com.example.demo.flights.seats.SeatRepository;
 import com.example.demo.flights.seats.SeatsConfiguration;
 import com.example.demo.flights.seats.SeatsConfigurationRepository;
+import com.example.demo.userflights.FlightSeat;
+import com.example.demo.userflights.UserFlight;
+import com.example.demo.userflights.UserFlightRepository;
 import com.example.demo.users.User;
 import com.example.demo.users.login.UserLoginRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +43,23 @@ public class SwapRequestController {
     private SeatRepository seatRepository;
 
     @GetMapping("/flight/{flightId}/seats")
-    public List<FlightSeat> getFlightSeats(@PathVariable("flightId") Long flightId) {
+    public List<FlightSeat> getFlightSeats(@PathVariable("flightId") Long flightId,
+                                           @Autowired Principal principal) {
         SeatsConfiguration seatsConfiguration = seatsConfigurationRepository.findByFlightId(flightId).get();
         List<SwapRequest> swapRequests = swapRequestRepository.findByFlightId(flightId);
+        User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
 
-        return seatsConfiguration.getSeats().stream().map(s -> new FlightSeat(s,
-                filterInboundSwapRequestsBySeatId(swapRequests, s),
-                filterOutboundSwapRequestsBySeatId(swapRequests, s))).collect(Collectors.toList());
+        return seatsConfiguration.getSeats().stream().map(s ->  {
+
+            List<SwapRequest> acceptedSWs = swapRequests.stream().filter(sw -> s.equals(sw.getTargetSeat()))
+                .filter(sw -> sw.getSwapRequestStatus() == SwapRequestStatus.ACCEPTED).collect(Collectors.toList());
+            return new FlightSeat()
+                .seat(s)
+                .occupied(!acceptedSWs.isEmpty())
+                .doesBelongToUser(acceptedSWs.stream()
+                    .filter(sw -> user.equals(sw.getUserFlight().getUser())).findFirst().isPresent());}
+
+            ).collect(Collectors.toList());
     }
 
     @PostMapping("/flight/{flightId}/my-seats")
