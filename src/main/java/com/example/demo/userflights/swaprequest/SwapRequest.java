@@ -3,6 +3,7 @@ package com.example.demo.userflights.swaprequest;
 import com.example.demo.flights.seats.Seat;
 import com.example.demo.userflights.UserFlight;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -72,6 +73,7 @@ public class SwapRequest {
     public SwapRequest() {
     }
 
+    @Builder
     public SwapRequest(UserFlight userFlight, Seat currentSeat, Seat targetSeat, SwapRequestStatus swapRequestStatus) {
         this.userFlight = userFlight;
         this.currentSeat = currentSeat;

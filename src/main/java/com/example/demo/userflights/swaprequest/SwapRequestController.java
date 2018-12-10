@@ -6,12 +6,12 @@ import com.example.demo.flights.seats.Seat;
 import com.example.demo.flights.seats.SeatRepository;
 import com.example.demo.flights.seats.SeatsConfiguration;
 import com.example.demo.flights.seats.SeatsConfigurationRepository;
-import com.example.demo.userflights.FlightSeat;
-import com.example.demo.userflights.UserFlight;
-import com.example.demo.userflights.UserFlightRepository;
+import com.example.demo.userflights.*;
 import com.example.demo.users.User;
 import com.example.demo.users.login.UserLoginRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -87,6 +87,30 @@ public class SwapRequestController {
 
 
     }
+
+    @PostMapping("/flight/{flightId}/swap-request")
+    public ResponseEntity makeSwapRequest(
+        @PathVariable("flightId") Long flightId,
+        @RequestBody SwapRequestRequest swapRequestRequest,
+        @Autowired Principal principal
+    ) {
+        User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
+        Flight flight = flightRepository.findById(flightId).get();
+        UserFlight userFlight = userFlightRepository.findByUserAndFlight(user, flight);
+
+        Seat targetSeat = seatRepository.findById(swapRequestRequest.getToSeatId()).get();
+        Seat currentSeat = seatRepository.findById(swapRequestRequest.getFromSeatId()).get();
+        SwapRequest swapRequest =
+            new SwapRequest().builder().swapRequestStatus(SwapRequestStatus.PENDING)
+                .userFlight(userFlight)
+                .targetSeat(targetSeat)
+                .currentSeat(currentSeat).build();
+
+        swapRequestRepository.save(swapRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+
+    }
+
 
     private List<SwapRequest> filterOutboundSwapRequestsBySeatId(List<SwapRequest> swapRequests, Seat seat) {
         return swapRequests.stream().filter(sr -> sr.getCurrentSeat() != null && sr.getCurrentSeat().equals(seat)).collect(Collectors.toList());
