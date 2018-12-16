@@ -10,6 +10,6 @@ import java.util.List;
 public interface UserFlightRepository extends JpaRepository <UserFlight, Long>{
   UserFlight findByUserAndFlight(User user, Flight flight);
 
-  @EntityGraph(attributePaths = {"flight", "swapRequests"})
+  @EntityGraph(attributePaths = {"flight"})
   List<UserFlight> findByUser(User user);
 }

@@ -21,8 +21,6 @@ public class UserFlight {
   @ManyToOne
   private Flight flight;
 
-  @OneToMany(mappedBy = "userFlight")
-  private List<SwapRequest> swapRequests;
 
   public Long getId() {
     return id;
@@ -70,11 +68,4 @@ public class UserFlight {
         '}';
   }
 
-  public List<SwapRequest> getSwapRequests() {
-    return swapRequests;
-  }
-
-  public void setSwapRequests(List<SwapRequest> swapRequests) {
-    this.swapRequests = swapRequests;
-  }
 }

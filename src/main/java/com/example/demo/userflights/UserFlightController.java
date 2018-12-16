@@ -81,7 +81,9 @@ public class UserFlightController {
         uf.getFlight().getFlightRouteTime().getFlightRoute().getOrigin(),
         uf.getFlight().getFlightRouteTime().getFlightRoute().getDestination(),
         LocalDateTime.of(uf.getFlight().getFlightDate(), uf.getFlight().getFlightRouteTime().getTime()));
-    List<Seat> mySeats = swapRequestRepository.findByUserFlight(uf).stream().map(sw -> sw.getTargetSeat()).collect(Collectors.toList());
+    List<Seat> mySeats = swapRequestRepository
+        .findByFlightAndAuthor(uf.getFlight(), uf.getUser())
+        .stream().map(sw -> sw.getTargetSeat()).collect(Collectors.toList());
     return new MyFlightResponse(uf.getFlight().getId(), foundFlight, mySeats);
   }
 
