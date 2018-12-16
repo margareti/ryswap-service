@@ -45,21 +45,22 @@ public class SwapRequestController {
     @GetMapping("/flight/{flightId}/seats")
     public List<FlightSeat> getFlightSeats(@PathVariable("flightId") Long flightId,
                                            @Autowired Principal principal) {
-        SeatsConfiguration seatsConfiguration = seatsConfigurationRepository.findByFlightId(flightId).get();
-        List<SwapRequest> swapRequests = swapRequestRepository.findByFlightId(flightId);
+
+        Flight flight = flightRepository.findById(flightId).get();
+        List<SwapRequest> swapRequests = swapRequestRepository.findByFlightAndSwapRequestStatus(flight, SwapRequestStatus.ACCEPTED);
         User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
+        SeatsConfiguration seatsConfiguration = seatsConfigurationRepository.findByFlightId(flightId).get();
 
-        return seatsConfiguration.getSeats().stream().map(s ->  {
-
-            List<SwapRequest> acceptedSWs = swapRequests.stream().filter(sw -> s.equals(sw.getTargetSeat()))
-                .filter(sw -> sw.getSwapRequestStatus() == SwapRequestStatus.ACCEPTED).collect(Collectors.toList());
-            return new FlightSeat()
+        return seatsConfiguration.getSeats().stream().map(s-> new FlightSeat().builder()
                 .seat(s)
-                .occupied(!acceptedSWs.isEmpty())
-                .doesBelongToUser(acceptedSWs.stream()
-                    .filter(sw -> user.equals(sw.getUserFlight().getUser())).findFirst().isPresent());}
-
-            ).collect(Collectors.toList());
+                .isOccupied(swapRequests.stream().filter(sw -> {
+                    return sw.getTargetSeat().equals(s);
+                }).findFirst().isPresent())
+                .belongsToUser(swapRequests.stream()
+                    .filter(sw -> sw.getTargetSeat().equals(s))
+                    .filter(sw -> sw.getAuthor().equals(user)).findFirst().isPresent()
+                ).build()
+        ).collect(Collectors.toList());
     }
 
     @PostMapping("/flight/{flightId}/my-seats")
@@ -67,21 +68,25 @@ public class SwapRequestController {
         @PathVariable("flightId") Long flightId,
         @RequestBody List<Long> seatIds,
         @Autowired Principal principal) {
-        // for each seat in seatIds, create Accepted SwapRequest
         User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
         Flight flight = flightRepository.findById(flightId).get();
-        UserFlight userFlight = userFlightRepository.findByUserAndFlight(user, flight);
-        userFlight.getSwapRequests().stream()
+        List<SwapRequest> userSwapRequests = swapRequestRepository
+            .findByFlightAndAuthorAndSwapRequestStatus(flight,user, SwapRequestStatus.ACCEPTED)
+            .stream()
             .filter(sr -> !seatIds.stream()
-                .filter(si -> sr.getSwapRequestStatus() == SwapRequestStatus.ACCEPTED &&
-                    sr.getTargetSeat().getId().equals(si)).findFirst().isPresent())
+                .filter(si -> sr.getTargetSeat().getId().equals(si)).findFirst().isPresent())
             .peek(sr -> swapRequestRepository.delete(sr)).collect(Collectors.toList());
 
           seatIds
             .stream()
-            .filter( sid -> ! userFlight.getSwapRequests().stream().filter(sr -> sr.getTargetSeat().getId().equals(sid)// :todo check accepted if needed
-            ).filter(sr -> sr.getSwapRequestStatus() == SwapRequestStatus.ACCEPTED).findFirst().isPresent() )
-            .map(si -> new SwapRequest(userFlight, null, seatRepository.findById(si).get(), SwapRequestStatus.ACCEPTED))
+            .filter( sid -> !userSwapRequests.stream()
+                .filter(sr -> sr.getTargetSeat().getId().equals(sid)).findFirst().isPresent())
+            .map(si -> new SwapRequest().builder()
+                .flight(flight)
+                .currentSeat(null)
+                .targetSeat(seatRepository.findById(si).get())
+                .swapRequestStatus(SwapRequestStatus.ACCEPTED)
+                .author(user).build())
             .peek(swapRequest -> swapRequestRepository.save(swapRequest)).collect(Collectors.toList());
 
 
@@ -96,27 +101,43 @@ public class SwapRequestController {
     ) {
         User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
         Flight flight = flightRepository.findById(flightId).get();
-        UserFlight userFlight = userFlightRepository.findByUserAndFlight(user, flight);
 
         Seat targetSeat = seatRepository.findById(swapRequestRequest.getToSeatId()).get();
         Seat currentSeat = seatRepository.findById(swapRequestRequest.getFromSeatId()).get();
         SwapRequest swapRequest =
             new SwapRequest().builder().swapRequestStatus(SwapRequestStatus.PENDING)
-                .userFlight(userFlight)
+                .flight(flight)
                 .targetSeat(targetSeat)
-                .currentSeat(currentSeat).build();
+                .currentSeat(currentSeat)
+                .author(user)
+                .build();
 
         swapRequestRepository.save(swapRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
 
     }
 
+    @GetMapping("/flight/{flightId}/swap-requests")
+    public List<SwapRequest> getSwapRequestsPerFlightAndUser(
+        @PathVariable("flightId") Long flightId,
+        @RequestParam("incoming") Boolean incoming,
+        @RequestParam("outgoing") Boolean outgoing,
+        @RequestParam("status") List<SwapRequestStatus> swapRequestStatuses,
+        @Autowired Principal principal
+    ) {
+      User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
+      Flight flight = flightRepository.findById(flightId).get();
 
-    private List<SwapRequest> filterOutboundSwapRequestsBySeatId(List<SwapRequest> swapRequests, Seat seat) {
-        return swapRequests.stream().filter(sr -> sr.getCurrentSeat() != null && sr.getCurrentSeat().equals(seat)).collect(Collectors.toList());
+
+      List<SwapRequest> outgoingSW = swapRequestRepository.findByFlightAndAuthor(flight, user);
+
+      List<SwapRequest> incomingSW = swapRequestRepository.findByFlightAndTargetSeats(flightId, outgoingSW.stream()
+      .filter(sw -> sw.getSwapRequestStatus() == SwapRequestStatus.ACCEPTED).map(sw -> sw.getTargetSeat()).collect(Collectors.toList()));
+
+      outgoingSW.addAll(incomingSW);
+      return outgoingSW;
     }
 
-    private List<SwapRequest> filterInboundSwapRequestsBySeatId(List<SwapRequest> swapRequests, Seat seat) {
-        return swapRequests.stream().filter(sr -> sr.getTargetSeat() != null && sr.getTargetSeat().equals(seat)).collect(Collectors.toList());
-    }
+    //да не даваме да резервират по 2 пъти една и съща седалка
+
 }

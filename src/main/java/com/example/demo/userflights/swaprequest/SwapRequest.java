@@ -1,14 +1,18 @@
 package com.example.demo.userflights.swaprequest;
 
+import com.example.demo.flights.Flight;
 import com.example.demo.flights.seats.Seat;
 import com.example.demo.userflights.UserFlight;
+import com.example.demo.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+@Data
 public class SwapRequest {
 
     @Id
@@ -17,7 +21,10 @@ public class SwapRequest {
 
     @JsonIgnore
     @ManyToOne
-    private UserFlight userFlight;
+    private Flight flight;
+
+    @ManyToOne
+    private User author;
 
     @ManyToOne
     @JoinColumn(name = "current_seat_id")
@@ -30,55 +37,17 @@ public class SwapRequest {
     @Enumerated(EnumType.STRING)
     private SwapRequestStatus swapRequestStatus;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public UserFlight getUserFlight() {
-        return userFlight;
-    }
-
-    public void setUserFlight(UserFlight userFlight) {
-        this.userFlight = userFlight;
-    }
-
-    public Seat getCurrentSeat() {
-        return currentSeat;
-    }
-
-    public void setCurrentSeat(Seat currentSeat) {
-        this.currentSeat = currentSeat;
-    }
-
-    public Seat getTargetSeat() {
-        return targetSeat;
-    }
-
-    public void setTargetSeat(Seat targetSeat) {
-        this.targetSeat = targetSeat;
-    }
-
-    public SwapRequestStatus getSwapRequestStatus() {
-        return swapRequestStatus;
-    }
-
-    public void setSwapRequestStatus(SwapRequestStatus swapRequestStatus) {
-        this.swapRequestStatus = swapRequestStatus;
-    }
 
     public SwapRequest() {
     }
 
     @Builder
-    public SwapRequest(UserFlight userFlight, Seat currentSeat, Seat targetSeat, SwapRequestStatus swapRequestStatus) {
-        this.userFlight = userFlight;
+    public SwapRequest(Flight flight, Seat currentSeat, Seat targetSeat, SwapRequestStatus swapRequestStatus, User author) {
+        this.flight = flight;
         this.currentSeat = currentSeat;
         this.targetSeat = targetSeat;
         this.swapRequestStatus = swapRequestStatus;
+        this.author = author;
     }
 
     @Override
@@ -98,7 +67,7 @@ public class SwapRequest {
     public String toString() {
         return "SwapRequest{" +
                 "id=" + id +
-                ", userFlight=" + userFlight +
+                ", flight=" + flight +
                 ", currentSeat=" + currentSeat +
                 ", targetSeat=" + targetSeat +
                 '}';

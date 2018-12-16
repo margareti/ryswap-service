@@ -2,9 +2,12 @@ package com.example.demo.userflights;
 
 import com.example.demo.flights.seats.Seat;
 import com.example.demo.userflights.swaprequest.SwapRequest;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.List;
 
+@Data
 public class FlightSeat {
 
   private Seat seat;
@@ -12,9 +15,12 @@ public class FlightSeat {
   boolean isOccupied;
   boolean belongsToUser;
 
+
+
   public FlightSeat() {
   }
 
+  @Builder
   public FlightSeat(
       Seat seat,
       Boolean isOccupied,
@@ -24,45 +30,4 @@ public class FlightSeat {
     this.belongsToUser = belongsToUser;
   }
 
-
-  public FlightSeat seat(Seat seat) {
-    this.setSeat(seat);
-    return this;
-  }
-
-  public FlightSeat occupied(boolean occupied) {
-    this.setOccupied(occupied);
-    return this;
-  }
-
-
-  public FlightSeat doesBelongToUser(boolean belongsToUser) {
-    this.setBelongsToUser(belongsToUser);
-    return this;
-  }
-
-
-  public Seat getSeat() {
-    return seat;
-  }
-
-  public void setSeat(Seat seat) {
-    this.seat = seat;
-  }
-
-  public boolean isBelongsToUser() {
-    return belongsToUser;
-  }
-
-  public void setBelongsToUser(boolean belongsToUser) {
-    this.belongsToUser = belongsToUser;
-  }
-
-  public boolean isOccupied() {
-    return isOccupied;
-  }
-
-  public void setOccupied(boolean occupied) {
-    isOccupied = occupied;
-  }
 }
