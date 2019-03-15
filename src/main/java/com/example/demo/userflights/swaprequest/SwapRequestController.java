@@ -71,11 +71,12 @@ public class SwapRequestController {
         User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
         Flight flight = flightRepository.findById(flightId).get();
         List<SwapRequest> userSwapRequests = swapRequestRepository
-            .findByFlightAndAuthorAndSwapRequestStatus(flight,user, SwapRequestStatus.ACCEPTED)
+            .findByFlightAndAuthorAndSwapRequestStatus(flight,user, SwapRequestStatus.ACCEPTED);
+        userSwapRequests
             .stream()
             .filter(sr -> !seatIds.stream()
                 .filter(si -> sr.getTargetSeat().getId().equals(si)).findFirst().isPresent())
-            .peek(sr -> swapRequestRepository.delete(sr)).collect(Collectors.toList());
+            .peek(sr -> swapRequestRepository.delete(sr)).toArray();
 
           seatIds
             .stream()
@@ -118,10 +119,8 @@ public class SwapRequestController {
     }
 
     @GetMapping("/flight/{flightId}/swap-requests")
-    public List<SwapRequest> getSwapRequestsPerFlightAndUser(
+    public List<SwapRequestData> getSwapRequestsPerFlightAndUser(
         @PathVariable("flightId") Long flightId,
-        @RequestParam("incoming") Boolean incoming,
-        @RequestParam("outgoing") Boolean outgoing,
         @RequestParam("status") List<SwapRequestStatus> swapRequestStatuses,
         @Autowired Principal principal
     ) {
@@ -129,10 +128,19 @@ public class SwapRequestController {
       Flight flight = flightRepository.findById(flightId).get();
 
 
-      List<SwapRequest> outgoingSW = swapRequestRepository.findByFlightAndAuthor(flight, user);
+      List<SwapRequestData> outgoingSW = swapRequestRepository.findByFlightAndAuthor(flight, user)
+          .stream()
+          .map(sw -> new SwapRequestData(sw, false)).collect(Collectors.toList());
 
-      List<SwapRequest> incomingSW = swapRequestRepository.findByFlightAndTargetSeats(flightId, outgoingSW.stream()
-      .filter(sw -> sw.getSwapRequestStatus() == SwapRequestStatus.ACCEPTED).map(sw -> sw.getTargetSeat()).collect(Collectors.toList()));
+      List<SwapRequestData> incomingSW = swapRequestRepository
+          .findByFlightAndTargetSeats(flightId, outgoingSW
+              .stream()
+              .filter(sw -> sw.getSwapRequest().getSwapRequestStatus() == SwapRequestStatus.ACCEPTED).map(sw -> sw.getSwapRequest().getTargetSeat())
+
+          )
+              .stream()
+              .map(sw -> new SwapRequestData(sw, true))
+              .collect(Collectors.toList()));
 
       outgoingSW.addAll(incomingSW);
       return outgoingSW;
