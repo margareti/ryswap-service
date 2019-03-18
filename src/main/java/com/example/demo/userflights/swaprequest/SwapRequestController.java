@@ -72,6 +72,18 @@ public class SwapRequestController {
         Flight flight = flightRepository.findById(flightId).get();
         List<SwapRequest> userSwapRequests = swapRequestRepository
             .findByFlightAndAuthorAndSwapRequestStatus(flight,user, SwapRequestStatus.ACCEPTED);
+
+        List<SwapRequest> otherUsersSeats = swapRequestRepository
+            .findByFlightAndTargetSeats(flightId, seatRepository.findAllById(seatIds))
+            .stream()
+            .filter(sw -> sw.getSwapRequestStatus() == SwapRequestStatus.ACCEPTED && !sw.getAuthor().equals(user))
+            .collect(Collectors.toList());
+
+        if (!otherUsersSeats.isEmpty()) {
+            throw new RuntimeException("Seat ids belong to other users: " + otherUsersSeats);
+        }
+
+
         userSwapRequests
             .stream()
             .filter(sr -> !seatIds.stream()
@@ -82,6 +94,8 @@ public class SwapRequestController {
             .stream()
             .filter( sid -> !userSwapRequests.stream()
                 .filter(sr -> sr.getTargetSeat().getId().equals(sid)).findFirst().isPresent())
+
+
             .map(si -> new SwapRequest().builder()
                 .flight(flight)
                 .currentSeat(null)
@@ -89,7 +103,6 @@ public class SwapRequestController {
                 .swapRequestStatus(SwapRequestStatus.ACCEPTED)
                 .author(user).build())
             .peek(swapRequest -> swapRequestRepository.save(swapRequest)).collect(Collectors.toList());
-
 
 
     }
@@ -130,22 +143,27 @@ public class SwapRequestController {
 
       List<SwapRequestData> outgoingSW = swapRequestRepository.findByFlightAndAuthor(flight, user)
           .stream()
-          .map(sw -> new SwapRequestData(sw, false)).collect(Collectors.toList());
+          .map(sw -> new SwapRequestData(sw, false))
+          .collect(Collectors.toList());
 
       List<SwapRequestData> incomingSW = swapRequestRepository
           .findByFlightAndTargetSeats(flightId, outgoingSW
               .stream()
-              .filter(sw -> sw.getSwapRequest().getSwapRequestStatus() == SwapRequestStatus.ACCEPTED).map(sw -> sw.getSwapRequest().getTargetSeat())
+              .filter(sw -> sw.getSwapRequest().getSwapRequestStatus() == SwapRequestStatus.ACCEPTED)
+              .map(sw -> sw.getSwapRequest().getTargetSeat())
+              .collect(Collectors.toList())
 
           )
               .stream()
               .map(sw -> new SwapRequestData(sw, true))
-              .collect(Collectors.toList()));
+              .collect(Collectors.toList());
 
       outgoingSW.addAll(incomingSW);
-      return outgoingSW;
-    }
 
-    //да не даваме да резервират по 2 пъти една и съща седалка
+      return outgoingSW
+          .stream()
+          .filter(sw -> swapRequestStatuses.contains(sw.getSwapRequest().getSwapRequestStatus()))
+          .collect(Collectors.toList());
+    }
 
 }

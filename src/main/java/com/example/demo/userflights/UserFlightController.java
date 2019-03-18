@@ -6,6 +6,7 @@ import com.example.demo.flights.FoundFlight;
 import com.example.demo.flights.seats.Seat;
 import com.example.demo.userflights.swaprequest.SwapRequest;
 import com.example.demo.userflights.swaprequest.SwapRequestRepository;
+import com.example.demo.userflights.swaprequest.SwapRequestStatus;
 import com.example.demo.users.User;
 import com.example.demo.users.UserRepository;
 import com.example.demo.users.login.UserLoginRepository;
@@ -83,7 +84,10 @@ public class UserFlightController {
         LocalDateTime.of(uf.getFlight().getFlightDate(), uf.getFlight().getFlightRouteTime().getTime()));
     List<Seat> mySeats = swapRequestRepository
         .findByFlightAndAuthor(uf.getFlight(), uf.getUser())
-        .stream().map(sw -> sw.getTargetSeat()).collect(Collectors.toList());
+        .stream()
+        .filter(sw -> sw.getSwapRequestStatus() == SwapRequestStatus.ACCEPTED)
+        .map(sw -> sw.getTargetSeat())
+        .collect(Collectors.toList());
     return new MyFlightResponse(uf.getFlight().getId(), foundFlight, mySeats);
   }
 
