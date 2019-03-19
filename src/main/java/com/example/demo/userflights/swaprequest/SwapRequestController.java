@@ -166,4 +166,71 @@ public class SwapRequestController {
           .collect(Collectors.toList());
     }
 
+    @PostMapping("swap-request/{swapRequestId}/decline")
+    public void declineSwapRequest(
+        @PathVariable("swapRequestId") Long swapRequestId,
+        @Autowired Principal principal
+    ) {
+        User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
+        SwapRequest srToDecline = swapRequestRepository.getOne(swapRequestId);
+
+        if (srToDecline == null) {
+            throw new RuntimeException("Whacha doin there, son? We have no records of such a swap request!");
+        }
+        SwapRequest ownerSR = swapRequestRepository
+            .findByFlightAndAuthorAndSwapRequestStatus(srToDecline.getFlight(), user, SwapRequestStatus.ACCEPTED)
+            .stream()
+            .filter(sr -> sr.getTargetSeat().equals(srToDecline.getTargetSeat()))
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("You don't own this seat, my dear"));
+        srToDecline.setSwapRequestStatus(SwapRequestStatus.DECLINED);
+        swapRequestRepository.save(srToDecline);
+    }
+
+    @PostMapping("swap-request/{swapRequestId}/cancel")
+    public void cancelSwapRequest (
+        @PathVariable("swapRequestId") Long swapRequestId,
+        @Autowired Principal principal
+    ) {
+        User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
+        SwapRequest srToCancel = swapRequestRepository.getOne(swapRequestId);
+
+        if (srToCancel == null) {
+            throw new RuntimeException("Whacha doin there, son? We have no records of such a swap request!");
+        }
+
+        if (srToCancel.getAuthor().equals(user) && srToCancel.getSwapRequestStatus().equals(SwapRequestStatus.PENDING)) {
+            srToCancel.setSwapRequestStatus(SwapRequestStatus.CANCELLED);
+            swapRequestRepository.save(srToCancel);
+        } else {
+            throw new RuntimeException("Can't cancel, because the swap request isn't yours or it is too late to cancel");
+        }
+    }
+
+    @PostMapping("swap-request/{swapRequestId}/accept")
+    public void acceptSwapRequest(
+        @PathVariable("swapRequestId") Long swapRequestId,
+        @Autowired Principal principal
+    ) {
+        User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
+        SwapRequest srToAccept = swapRequestRepository.getOne(swapRequestId);
+
+        if (srToAccept == null) {
+            throw new RuntimeException("Whacha doin there, son? We have no records of such a swap request!");
+        }
+
+        SwapRequest ownerSR = swapRequestRepository
+            .findByFlightAndAuthorAndSwapRequestStatus(srToAccept.getFlight(), user, SwapRequestStatus.ACCEPTED)
+            .stream()
+            .filter(sr -> sr.getTargetSeat().equals(srToAccept.getTargetSeat()))
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("You don't own this seat, my dear"));
+        srToAccept.setSwapRequestStatus(SwapRequestStatus.ACCEPTED);
+        ownerSR.setSwapRequestStatus(SwapRequestStatus.AULD);
+        swapRequestRepository.save(srToAccept);
+        swapRequestRepository.save(ownerSR);
+    }
+
+
+
 }
