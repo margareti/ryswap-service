@@ -43,7 +43,7 @@ public class SwapRequestController {
     private SeatRepository seatRepository;
 
     @GetMapping("/flight/{flightId}/seats")
-    public List<FlightSeat> getFlightSeats(@PathVariable("flightId") Long flightId,
+    public List<FlightSeatData> getFlightSeats(@PathVariable("flightId") Long flightId,
                                            @Autowired Principal principal) {
 
         Flight flight = flightRepository.findById(flightId).get();
@@ -51,7 +51,7 @@ public class SwapRequestController {
         User user = userLoginRepository.findByUsername(principal.getName()).get().getUser();
         SeatsConfiguration seatsConfiguration = seatsConfigurationRepository.findByFlightId(flightId).get();
 
-        return seatsConfiguration.getSeats().stream().map(s-> new FlightSeat().builder()
+        return seatsConfiguration.getSeats().stream().map(s-> new FlightSeatData().builder()
                 .seat(s)
                 .isOccupied(swapRequests.stream().filter(sw -> {
                     return sw.getTargetSeat().equals(s);
@@ -231,6 +231,9 @@ public class SwapRequestController {
         swapRequestRepository.save(ownerSR);
     }
 
+    //TODO:
 
+    //check that SW doesnt yet exist before creating one
+    //when accepting new SW user doesnt get swapped seat
 
 }

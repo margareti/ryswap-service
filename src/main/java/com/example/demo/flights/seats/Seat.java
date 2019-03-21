@@ -15,6 +15,7 @@ public class Seat {
     private Integer row;
     private String column;
 
+
     @JsonIgnore
     @ManyToOne
     private SeatsConfiguration seatsConfiguration;
