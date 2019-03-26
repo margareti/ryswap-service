@@ -14,7 +14,6 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-@Builder
 public class FlightSeat {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +28,16 @@ public class FlightSeat {
   @ManyToOne
   private Seat seat;
 
+  public FlightSeat() {
+  }
+
+  @Builder
+  public FlightSeat(User owner, Flight flight, Seat seat) {
+    this.owner = owner;
+    this.flight = flight;
+    this.seat = seat;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -41,6 +50,7 @@ public class FlightSeat {
   public int hashCode() {
     return Objects.hash(getId());
   }
+
 }
 
 

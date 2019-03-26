@@ -22,6 +22,12 @@ public interface SwapRequestRepository extends JpaRepository<SwapRequest, Long> 
                                                                 User author,
                                                                 SwapRequestStatus swapRequestStatus);
 
+    List<SwapRequest> findByFlightAndAuthorAndSwapRequestStatusAndCurrentSeatAndTargetSeat(Flight flight,
+                                                                                           User author,
+                                                                                           SwapRequestStatus swapRequestStatus,
+                                                                                           Seat currentSeat,
+                                                                                           Seat targetSeat);
+
     List<SwapRequest> findByFlightAndSwapRequestStatus(Flight flight, SwapRequestStatus swapRequestStatus);
     @Query("from SwapRequest sr where sr.flight.id = :flightId and sr.targetSeat in (:targetSeats)")
     List<SwapRequest> findByFlightAndTargetSeats(@Param("flightId") Long flightId,
