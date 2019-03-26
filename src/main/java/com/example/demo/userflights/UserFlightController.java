@@ -4,9 +4,7 @@ import com.example.demo.flights.Flight;
 import com.example.demo.flights.FlightRepository;
 import com.example.demo.flights.FoundFlight;
 import com.example.demo.flights.seats.Seat;
-import com.example.demo.userflights.swaprequest.SwapRequest;
 import com.example.demo.userflights.swaprequest.SwapRequestRepository;
-import com.example.demo.userflights.swaprequest.SwapRequestStatus;
 import com.example.demo.users.User;
 import com.example.demo.users.UserRepository;
 import com.example.demo.users.login.UserLoginRepository;
@@ -43,6 +41,9 @@ public class UserFlightController {
   @Autowired
   private SwapRequestRepository swapRequestRepository;
 
+  @Autowired
+  private FlightSeatRepository flightSeatRepository;
+
 
 
   @PostMapping("/user/flights/{flightId}")
@@ -74,7 +75,6 @@ public class UserFlightController {
 
     logger.info("get user flights end");
     return myFlights;
-
   }
 
   private MyFlightResponse createMyFlightResponse(UserFlight uf) {
@@ -82,11 +82,10 @@ public class UserFlightController {
         uf.getFlight().getFlightRouteTime().getFlightRoute().getOrigin(),
         uf.getFlight().getFlightRouteTime().getFlightRoute().getDestination(),
         LocalDateTime.of(uf.getFlight().getFlightDate(), uf.getFlight().getFlightRouteTime().getTime()));
-    List<Seat> mySeats = swapRequestRepository
-        .findByFlightAndAuthor(uf.getFlight(), uf.getUser())
+
+    List<Seat> mySeats = flightSeatRepository.findByOwnerAndFlight(uf.getUser(), uf.getFlight())
         .stream()
-        .filter(sw -> sw.getSwapRequestStatus() == SwapRequestStatus.ACCEPTED)
-        .map(sw -> sw.getTargetSeat())
+        .map(seat -> seat.getSeat())
         .collect(Collectors.toList());
     return new MyFlightResponse(uf.getFlight().getId(), foundFlight, mySeats);
   }
